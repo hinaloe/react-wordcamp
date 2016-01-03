@@ -19,7 +19,7 @@ class Central extends React.Component<common.ItemProp<CentralPostData>, {}>{
     getWordCampInfoFromPostmeta() {
         let post_meta = this.props.post.post_meta;
         let wcdata: { [X: string]: any } = {};
-        for (var i = 0; i < post_meta.length; i++) {
+        for (let i = 0; i < post_meta.length; i++) {
             wcdata[post_meta[i].key] = post_meta[i].value;
         }
         return wcdata;
@@ -62,9 +62,9 @@ class Central extends React.Component<common.ItemProp<CentralPostData>, {}>{
 
 class CentralList extends React.Component<CentralListProp, {}> {
     parseStartDate(postData: CentralPostData[]) {
-        for (var j = 0; j < postData.length; j++) {
+        for (let j = 0; j < postData.length; j++) {
             let post_meta = postData[j].post_meta;
-            for (var i = 0; i < post_meta.length; i++) {
+            for (let i = 0; i < post_meta.length; i++) {
                 if (post_meta[i].key === "Start Date (YYYY-mm-dd)") {
                     postData[j]['startDate'] = post_meta[i].value;
                 }
