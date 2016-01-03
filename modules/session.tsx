@@ -2,10 +2,11 @@
 
 // Load Reacts
 import * as React from 'react';
+import * as common from './common';
 
 
 // Component
-class Session extends React.Component<any, any>{
+class Session extends React.Component<common.ItemProp<common.WordCampPost>, {}>{
     render() {
         return (
             <div>
@@ -16,7 +17,7 @@ class Session extends React.Component<any, any>{
     }
 }
 
-class SessionList extends React.Component<any, any> {
+class SessionList extends React.Component<common.ListProp, {}> {
     render() {
         let sessionNodes = this.props.postData.map(function(post) {
             return (
@@ -31,29 +32,7 @@ class SessionList extends React.Component<any, any> {
     };
 }
 
-export class SessionBox extends React.Component<any, any>{
-    loadPostsFromServer() {
-        $.ajax({
-            url: this.props.apiUrl,
-            dataType: 'json',
-            cache: false,
-
-        })
-            .then((data) => {
-                this.setState({ data: data })
-            })
-            .fail((xhr, status, err) => {
-                console.error(this.props.url, status, err.toString());
-
-            })
-    };
-    state: any = {
-        data: []
-
-    };
-    componentDidMount() {
-        this.loadPostsFromServer();
-    };
+export class SessionBox extends common.BaseBox<common.WordCampPost>{
     render() {
         return (
             <SessionList postData={this.state.data} />

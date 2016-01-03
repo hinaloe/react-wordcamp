@@ -2,13 +2,23 @@
 
 // Load Reacts
 import * as React from 'react';
+import * as common from './common';
+
+
+interface CentralPostData extends common.WordCampPost {
+    startDate?: string;
+}
+
+interface CentralListProp extends common.ListProp {
+    postData: CentralPostData[];
+}
 
 
 // Component
-class Central extends React.Component <any,any>{
+class Central extends React.Component<common.ItemProp<CentralPostData>, {}>{
     getWordCampInfoFromPostmeta() {
         let post_meta = this.props.post.post_meta;
-        let wcdata = [];
+        let wcdata: { [X: string]: any } = {};
         for (var i = 0; i < post_meta.length; i++) {
             wcdata[post_meta[i].key] = post_meta[i].value;
         }
@@ -24,9 +34,10 @@ class Central extends React.Component <any,any>{
             pastEventClass = 'info';
             pastEventText = '(Finished)';
         }
-        wcdata["Start Date"] = startDate.toLocaleString();
+        wcdata["Start Date"] = `${startDate.getUTCMonth()+1}/${startDate.getUTCDate()} ${startDate.getUTCFullYear()}`
         if (wcdata["End Date (YYYY-mm-dd)"]) {
-            wcdata["End Date"] = new Date(wcdata["End Date (YYYY-mm-dd)"] * 1000).toLocaleString();
+            let date = new Date(wcdata["End Date (YYYY-mm-dd)"] * 1000);
+            wcdata["End Date"] = `${date.getUTCMonth()+1}/${date.getUTCDate()} ${date.getUTCFullYear()}`
         } else {
             wcdata["End Date"] = 'No data';
         }
@@ -49,8 +60,8 @@ class Central extends React.Component <any,any>{
     }
 }
 
-class CentralList extends React.Component<any,any> {
-    parseStartDate (postData) {
+class CentralList extends React.Component<CentralListProp, {}> {
+    parseStartDate(postData: CentralPostData[]) {
         for (var j = 0; j < postData.length; j++) {
             let post_meta = postData[j].post_meta;
             for (var i = 0; i < post_meta.length; i++) {
@@ -63,7 +74,6 @@ class CentralList extends React.Component<any,any> {
     };
     sortByStartDate() {
         let postData = this.parseStartDate(this.props.postData);
-        const key = "startDate";
 
         //ASC
         let num_a = 1;
@@ -73,9 +83,9 @@ class CentralList extends React.Component<any,any> {
         num_a = -1;
         num_b = 1;
 
-        const data = postData.sort(function(a, b) {
-            const x = a[key];
-            const y = b[key];
+        const data = postData.sort((a, b) => {
+            const x = +a.startDate;
+            const y = +b.startDate;
             if (x > y) return num_a;
             if (x < y) return num_b;
             return 0;
@@ -84,7 +94,7 @@ class CentralList extends React.Component<any,any> {
     };
     render() {
         const eventData = this.sortByStartDate();
-        const centralNodes = eventData.map(function(post) {
+        const centralNodes = eventData.map(function(post: CentralPostData) {
             return (
                 <Central post={post} key={post.ID}/ >
             );
@@ -113,30 +123,7 @@ class CentralList extends React.Component<any,any> {
     }
 }
 
-export class CentralBox extends React.Component<any, any> {
-    private loadPostsFromServer() {
-        $.ajax({
-            url: this.props.apiUrl,
-            dataType: 'json',
-            cache: false,
-
-        })
-            .then((data) => {
-                this.setState({ data: data });
-            })
-            .fail((xhr: JQueryXHR, status: string, err) => {
-                console.error(this.props.url, status, err.toString);
-            })
-
-    };
-
-    state: any = {
-        data: []
-
-    };
-    componentDidMount() {
-        this.loadPostsFromServer();
-    };
+export class CentralBox extends common.BaseBox<CentralPostData>{
     render() {
         return (
             <CentralList postData={this.state.data} />

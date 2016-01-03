@@ -4,6 +4,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {CentralBox} from './central';
+import * as common from './common';
 
 // API URL
 const apiUrl = 'https://central.wordcamp.org/wp-json/';
@@ -39,34 +40,7 @@ class PostList extends React.Component<any, any>{
     }
 }
 
-class PostBox extends React.Component<any, any>{
-    constructor() {
-        super();
-
-    }
-
-    loadPostsFromServer() {
-        $.ajax({
-            url: this.props.apiUrl,
-            dataType: 'json',
-            cache: false,
-
-        })
-            .then((data) => {
-                this.setState({ data: data })
-            })
-            .fail((xhr, status, err) => {
-                console.error(this.props.url, status, err.toString());
-
-            })
-    };
-    state: any = {
-        data: []
-
-    };
-    componentDidMount() {
-        this.loadPostsFromServer();
-    };
+class PostBox extends common.BaseBox<common.WordCampPost>{
     render() {
         return (
             <PostList postData={this.state.data} />

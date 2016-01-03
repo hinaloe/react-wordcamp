@@ -2,10 +2,11 @@
 
 // Load Reacts
 import * as React from 'react';
+import * as common from './common';
 
 
 // Component
-class SponsorSite extends React.Component<any, any>{
+class SponsorSite extends React.Component<{ data: { [key: string]: string }[] }, {}>{
     render() {
         return (
             <a href={this.props.data[0]['value']}>
@@ -15,7 +16,7 @@ class SponsorSite extends React.Component<any, any>{
     }
 };
 
-class Sponsor extends React.Component<any, any>{
+class Sponsor extends React.Component<common.ItemProp<common.WordCampPost>, {}>{
     render() {
         let sponsorSite: string | JSX.Element = '';
         if (this.props.post.post_meta[0]) {
@@ -26,7 +27,7 @@ class Sponsor extends React.Component<any, any>{
                 <h2 className="page-header">{this.props.post.title}</h2>
                 <dl>
                     <dt>Sponsor Lebel</dt>
-                    <dd>{this.props.post.terms.wcb_sponsor_level[0]['name']}</dd>
+                    <dd>{this.props.post.terms["wcb_sponsor_level"][0].name}</dd>
                     <dt>Sponsor WebSite</dt>
                     <dd>{sponsorSite}</dd>
                     </dl>
@@ -36,7 +37,7 @@ class Sponsor extends React.Component<any, any>{
     }
 }
 
-class SponsorList extends React.Component<any, any>{
+class SponsorList extends React.Component<common.ListProp, {}>{
     render() {
         let sponsorNodes = this.props.postData.map((post) => {
             return (
@@ -51,29 +52,7 @@ class SponsorList extends React.Component<any, any>{
     }
 }
 
-export class SponsorBox extends React.Component<any, any>{
-    loadPostsFromServer() {
-        $.ajax({
-            url: this.props.apiUrl,
-            dataType: 'json',
-            cache: false,
-
-        })
-            .then((data) => {
-                this.setState({ data: data })
-            })
-            .fail((xhr, status, err) => {
-                console.error(this.props.url, status, err.toString());
-
-            })
-    };
-    state: any = {
-        data: []
-
-    };
-    componentDidMount() {
-        this.loadPostsFromServer();
-    };
+export class SponsorBox extends common.BaseBox<common.WordCampPost> {
     render() {
         return (
             <SponsorList postData={this.state.data} />

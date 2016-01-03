@@ -15,7 +15,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build": "browserify --debug --transform babelify modules/app.jsx --outfile app.js"
+    "build": "browserify --debug -p tsify modules/app.jsx --outfile app.js"
   },
   "author": "",
   "license": "GNU GENERAL PUBLIC LICENSE"

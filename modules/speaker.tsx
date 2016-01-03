@@ -2,10 +2,11 @@
 
 // Load Reacts
 import * as React from 'react';
+import * as common from './common';
 
 
 // Component
-class Speaker extends React.Component<any, any>{
+class Speaker extends React.Component<common.ItemProp<common.WordCampPost>, {}>{
     render() {
         return (
             <div>
@@ -16,7 +17,7 @@ class Speaker extends React.Component<any, any>{
     }
 };
 
-class SpeakerList extends React.Component<any, any>{
+class SpeakerList extends React.Component<common.ListProp, {}>{
     render() {
         let speakerNodes = this.props.postData.map(function(post) {
             return (
@@ -31,29 +32,7 @@ class SpeakerList extends React.Component<any, any>{
     }
 }
 
-export class SpeakerBox extends React.Component<any, any>{
-    loadPostsFromServer() {
-        $.ajax({
-            url: this.props.apiUrl,
-            dataType: 'json',
-            cache: false,
-
-        })
-            .then((data) => {
-                this.setState({ data: data })
-            })
-            .fail((xhr, status, err) => {
-                console.error(this.props.url, status, err.toString());
-
-            })
-    };
-    state: any = {
-        data: []
-
-    };
-    componentDidMount() {
-        this.loadPostsFromServer();
-    };
+export class SpeakerBox extends common.BaseBox<common.WordCampPost> {
     render() {
         return (
             <SpeakerList postData={this.state.data} />
